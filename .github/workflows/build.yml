@@ -55,7 +55,7 @@ jobs:
           mv dist/*.AppImage dist/TruckQueue-Lite-Linux.AppImage
           
       - name: Upload Windows artifact
-        if: github.event_name == 'release' && runner.os == 'windows-latest'
+        if: github.event_name == 'release' && matrix.os == 'windows-latest'
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.exe
@@ -63,7 +63,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Linux artifact
-        if: github.event_name == 'release' && runner.os == 'ubuntu-latest'
+        if: github.event_name == 'release' && matrix.os == 'ubuntu-latest'
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.AppImage
