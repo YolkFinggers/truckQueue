@@ -30,27 +30,33 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libx11-dev libxkbfile-dev libsecret-1-dev fakeroot rpm
 
-      - name: Build Electron App
-        run: |
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            npm run dist -- -w
-          else
-            npm run dist -- -l
-          fi
+      - name: Build Windows
+        if: matrix.os == 'windows-latest'
+        run: npm run dist -- -w
 
-      - name: Rename artifacts with version and OS
-        if: github.event_name == 'release'
+      - name: Build Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: npm run dist -- -l
+
+
+      - name: Rename Windows artifacts
+        if: matrix.os == 'windows-latest'
         run: |
-          VERSION=${{ github.event.release.tag_name }}
-          OS_NAME=""
-          if ([ "${{ matrix.os }}" == "windows-latest" ]); then
-            OS_NAME="Windows"
-          else
-            OS_NAME="Linux"
-          fi
+          mkdir -p dist
           for f in dist/*; do
             EXT="${f##*.}"
-            NEWNAME="TruckQueue-Lite-${OS_NAME}.${EXT}"
+            NEWNAME="TruckQueue-Windows.${EXT}"
+            mv "$f" "dist/$NEWNAME"
+          done
+
+      - name: Rename Linux artifacts
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          VERSION=${{ github.event.release.tag_name }}
+          mkdir -p dist
+          for f in dist/*; do
+            EXT="${f##*.}"
+            NEWNAME="TruckQueue-Linux.${EXT}"
             mv "$f" "dist/$NEWNAME"
           done
 
@@ -58,6 +64,8 @@ jobs:
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*
+          files: |
+            dist/*.exe
+            dist/*.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
