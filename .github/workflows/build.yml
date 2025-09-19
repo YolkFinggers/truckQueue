@@ -42,32 +42,17 @@ jobs:
               GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run dist -- -l
 
-
-      - name: Rename Windows artifacts
+      - name: Rename Windows installer
         if: matrix.os == 'windows-latest'
-        env:
-              GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
-          mkdir -p dist
-          for f in dist/*; do
-            EXT="${f##*.}"
-            NEWNAME="TruckQueue-Windows.${EXT}"
-            mv "$f" "dist/$NEWNAME"
-          done
+          mv dist/*.exe dist/TruckQueue-Lite-Windows.exe
 
-      - name: Rename Linux artifacts
+      - name: Rename Linux installer
         if: matrix.os == 'ubuntu-latest'
-        env:
-              GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
         run: |
-          VERSION=${{ github.event.release.tag_name }}
-          mkdir -p dist
-          for f in dist/*; do
-            EXT="${f##*.}"
-            NEWNAME="TruckQueue-Linux.${EXT}"
-            mv "$f" "dist/$NEWNAME"
-          done
+          mv dist/*.AppImage dist/TruckQueue-Lite-Linux.AppImage
 
       - name: Upload artifacts to release
         if: github.event_name == 'release'
