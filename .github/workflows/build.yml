@@ -3,7 +3,6 @@ name: Build Electron App
 on:
   release:
     types: [created]
-
 permissions: 
   contents: write
 jobs:

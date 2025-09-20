@@ -4,30 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Truck Queue - Staff</title>
-  <link rel="stylesheet" href="./css/assign.css">
+  <link rel="stylesheet" href="./css/assignPage/assign.css">
+<link rel="stylesheet" href="./css/assignPage/topnav.css">
+
 </head>
 <body>
-  <div class="layout">
-  <div class="left-sidebar">
-    <!-- Put extra stuff here -->
+<div class="top-nav">
+
+  <div class="nav-left">
+  <button class="settings-btn">
+    <img src="./img/settings.png" alt="Settings" />
+  </button>
+</div>
+
+  <div class="nav-center">
+    <div class="logo">Truck Queue - Staff Input</div>
   </div>
 
-  <div class="main">
-    <h2>Truck Queue - Staff Input</h2>
+<div class="nav-right">
+  <button class="quit-btn">
+      <img src="./img/power.png" alt="Quit" />
+    </button>
+  </div>
 
-    <form id="truckForm">
-      <div>
-        <input type="text" id="plate" placeholder="Number Plate" required>
-      </div>
-      <div>
-        <input type="text" id="bay" placeholder="Loading Bay" required>
-      </div>
-      <div>
-        <button type="submit">Add Truck</button>
-      </div>
+  </div>
+
+    <div class="layout">
+    <div class="left-sidebar">
+      <!-- Put extra stuff here -->
+    </div>
+
+    <div class="main">
+
+      <form class="truckForm" id="truckForm">
+        <div>
+          <input type="text" id="plate" placeholder="Number Plate" required>
+        </div>
+        <div>
+          <input type="text" id="bay" placeholder="Loading Bay" required>
+        </div>
+        <div>
+          <button type="submit">Add Truck</button>
+        </div>
     </form>
 
     <h3>Assigned Trucks</h3>
+    <div class="truckListContainer">    
+
     <div id="assignedList" class="truck-list"></div>
 
     <div class="button-group">
@@ -40,6 +63,7 @@
       <input type="number" id="failTime" value="15" min="1" max="99" step="1">
     </div>
   </div>
+</div>
 
   <div class="right-sidebar">
     <!-- Put extra stuff here -->
