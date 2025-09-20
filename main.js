@@ -8,9 +8,23 @@ let displayWin;
 function createWindows() {
   const displays = screen.getAllDisplays();
   const primary = displays[0];
-  const secondary = displays[1] || primary; // fallback if only 1 monitor
+  let secondary;
+  if (displays.length < 2) {
+    console.warn('Only one monitor detected. Display window will open on the same monitor as assign window.');
+    // Place displayWin offset from assignWin to avoid overlap
+    secondary = {
+      bounds: {
+    webPreferences: { contextIsolation: true, nodeIntegration: false },
+        y: primary.bounds.y + 50,
+        width: primary.bounds.width,
+        height: primary.bounds.height
+      }
+    };
+  } else {
+    secondary = displays[1];
+  }
 
-  // Assign window (fullscreen)
+  // Assign window (maximized)
   assignWin = new BrowserWindow({
     fullscreen: false,
     show: false,
@@ -30,6 +44,7 @@ function createWindows() {
     width: secondary.bounds.width,
     height: secondary.bounds.height,
     kiosk: true,
+    frame: false,
     webPreferences: { contextIsolation: true },
   });
   displayWin.loadFile(path.join(__dirname, 'src', 'display.html'));
