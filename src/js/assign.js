@@ -7,7 +7,7 @@ function saveData(data) {
   window.dispatchEvent(new Event("storage")); // force update in same browser
 }
 
-const notificationSound = new Audio("sounds/ding.mp3");
+const notificationSound = new Audio("src/sounds/ding.mp3");
 let lastFirstTruck = null;
 
 let voices = [];
