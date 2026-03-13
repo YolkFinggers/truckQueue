@@ -7,8 +7,7 @@ function saveData(data) {
   window.dispatchEvent(new Event("storage")); // force update in same browser
 }
 
-const notificationSound = new Audio("./src/sounds/ding.mp3");
-let lastFirstTruck = null;
+const notificationSound = new Audio("../src/sounds/ding.mp3");
 
 let voices = [];
 
@@ -30,7 +29,7 @@ function announceTruck(truck) {
   const speech = new SpeechSynthesisUtterance(message);
 
   speech.voice = getEnglishVoice();
-  speech.rate = 0.9;     // speaking speed
+  speech.rate = 0.4;     // speaking speed
   speech.pitch = 1;
   speech.volume = 1;
 
@@ -43,20 +42,6 @@ function render() {
   const data = getData();
   const assignedList = document.getElementById("assignedList");
   assignedList.innerHTML = "";
-
-  if (data.assigned.length > 0) {
-    const firstTruck = data.assigned[0];
-    const currentFirst = firstTruck.plate + firstTruck.time;
-
-    if (lastFirstTruck && lastFirstTruck !== currentFirst) {
-      notificationSound.play();
-      setTimeout(() => {
-      announceTruck(firstTruck);
-      }, 500);
-    }
-
-    lastFirstTruck = currentFirst;
-  }
 
   data.assigned.forEach((truck, index) => {
     const div = document.createElement("div");
@@ -136,13 +121,23 @@ document.getElementById("truckForm").addEventListener("submit", (e) => {
   if (!plate || !bay) return;
 
   const data = getData();
-  data.assigned.unshift({ plate, bay, time: Date.now() });
+  const newTruck = { plate, bay, time: Date.now() };
+  data.assigned.unshift(newTruck);
   if (data.assigned.length > 15) data.assigned.pop(); 
   saveData(data);
 
+  // Clear input fields
   document.getElementById("plate").value = "";
   document.getElementById("bay").value = "";
+
+  // Render updated list
   render();
+
+  // Announce the newly added truck
+  notificationSound.play();
+  setTimeout(() => {
+      announceTruck(newTruck);
+      }, 2000);
 });
 
 function autoFail(minutes) {
