@@ -7,16 +7,60 @@ function saveData(data) {
   window.dispatchEvent(new Event("storage")); // force update in same browser
 }
 
+const notificationSound = new Audio("sounds/ding.mp3");
+let lastFirstTruck = null;
+
+let voices = [];
+
+speechSynthesis.onvoiceschanged = () => {
+  voices = speechSynthesis.getVoices();
+};
+
+function getEnglishVoice() {
+  return voices.find(v => v.lang.includes("en")) || voices[0];
+}
+
+function announceTruck(truck) {
+  if (!truck) return;
+
+  const message = `Truck ${truck.plate}, please proceed to Bay ${truck.bay}`;
+
+  const speech = new SpeechSynthesisUtterance(message);
+
+  speech.voice = getEnglishVoice();
+  speech.rate = 0.9;     // speaking speed
+  speech.pitch = 1;
+  speech.volume = 1;
+
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(speech);
+}
+
+
 function render() {
   const data = getData();
   const assignedList = document.getElementById("assignedList");
   assignedList.innerHTML = "";
 
+  if (data.assigned.length > 0) {
+    const firstTruck = data.assigned[0];
+    const currentFirst = firstTruck.plate + firstTruck.time;
+
+    if (lastFirstTruck && lastFirstTruck !== currentFirst) {
+      notificationSound.play();
+      setTimeout(() => {
+      announceTruck(firstTruck);
+      }, 500);
+    }
+
+    lastFirstTruck = currentFirst;
+  }
+
   data.assigned.forEach((truck, index) => {
     const div = document.createElement("div");
     div.className = "truck";
     div.innerHTML = `
-      <b>${formatDateTime(truck.time)}<b> | Plate: <b>${truck.plate}</b> → Bay <b>${truck.bay}</b>
+      <b>${formatDateTime(truck.time)}</b> | Plate: <b>${truck.plate}</b> → Bay <b>${truck.bay}</b>
       <button style='width: 40%' onclick="markFailed(${index})">Mark Failed</button>
       <button style='width: 40%' onclick="done(${index})">Reached</button>
     `;
