@@ -7,6 +7,37 @@ function saveData(data) {
   window.dispatchEvent(new Event("storage")); // force update in same browser
 }
 
+const notificationSound = new Audio("../src/sounds/ding.mp3");
+
+let voices = [];
+
+speechSynthesis.onvoiceschanged = () => {
+  voices = speechSynthesis.getVoices();
+};
+
+function getEnglishVoice() {
+  return voices.find(v => v.lang.includes("en")) || voices[0];
+}
+
+function announceTruck(truck) {
+  if (!truck) return;
+
+  const spacedPlate = truck.plate.split('').join(' ');
+
+  const message = `Truck ${spacedPlate}, please proceed to Bay ${truck.bay}`;
+
+  const speech = new SpeechSynthesisUtterance(message);
+
+  speech.voice = getEnglishVoice();
+  speech.rate = 0.4;     // speaking speed
+  speech.pitch = 1;
+  speech.volume = 1;
+
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(speech);
+}
+
+
 function render() {
   const data = getData();
   const assignedList = document.getElementById("assignedList");
@@ -16,7 +47,7 @@ function render() {
     const div = document.createElement("div");
     div.className = "truck";
     div.innerHTML = `
-      <b>${formatDateTime(truck.time)}<b> | Plate: <b>${truck.plate}</b> → Bay <b>${truck.bay}</b>
+      <b>${formatDateTime(truck.time)}</b> | Plate: <b>${truck.plate}</b> → Bay <b>${truck.bay}</b>
       <button style='width: 40%' onclick="markFailed(${index})">Mark Failed</button>
       <button style='width: 40%' onclick="done(${index})">Reached</button>
     `;
@@ -90,13 +121,23 @@ document.getElementById("truckForm").addEventListener("submit", (e) => {
   if (!plate || !bay) return;
 
   const data = getData();
-  data.assigned.unshift({ plate, bay, time: Date.now() });
+  const newTruck = { plate, bay, time: Date.now() };
+  data.assigned.unshift(newTruck);
   if (data.assigned.length > 15) data.assigned.pop(); 
   saveData(data);
 
+  // Clear input fields
   document.getElementById("plate").value = "";
   document.getElementById("bay").value = "";
+
+  // Render updated list
   render();
+
+  // Announce the newly added truck
+  notificationSound.play();
+  setTimeout(() => {
+      announceTruck(newTruck);
+      }, 2000);
 });
 
 function autoFail(minutes) {
