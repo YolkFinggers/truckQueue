@@ -7,7 +7,7 @@ function saveData(data) {
   window.dispatchEvent(new Event("storage")); // force update in same browser
 }
 
-const notificationSound = new Audio("src/sounds/ding.mp3");
+const notificationSound = new Audio("./src/sounds/ding.mp3");
 let lastFirstTruck = null;
 
 let voices = [];
@@ -23,7 +23,9 @@ function getEnglishVoice() {
 function announceTruck(truck) {
   if (!truck) return;
 
-  const message = `Truck ${truck.plate}, please proceed to Bay ${truck.bay}`;
+  const spacedPlate = truck.plate.split('').join(' ');
+
+  const message = `Truck ${spacedPlate}, please proceed to Bay ${truck.bay}`;
 
   const speech = new SpeechSynthesisUtterance(message);
 
