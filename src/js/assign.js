@@ -149,7 +149,7 @@ function autoFail(minutes) {
     if (now - data.assigned[i].time >= threshold) {
       const truck = data.assigned.splice(i, 1)[0];
       if (truck) data.failed.unshift(truck);
-    if (data.failed.length > 5) data.failed.pop(); 
+    if (data.failed.length > 4) data.failed.pop(); 
     }
   }
 
