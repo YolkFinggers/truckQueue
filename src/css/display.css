@@ -37,11 +37,11 @@ h2,h3{
 @media (min-width: 2500px){
 h2,h3{
   text-align: center;
-  font-size: clamp(1.3rem, 4vw + 1rem, 8rem);
+  font-size: clamp(1.3rem, 3vw + 1rem, 8rem);
 }
 
 .truck {
-  font-size: clamp(1.8rem, 8vw + 1.5rem, 10rem);
+  font-size: clamp(1.8rem, 6vw + 1rem, 10rem);
   padding: 15px;
 }
 }
