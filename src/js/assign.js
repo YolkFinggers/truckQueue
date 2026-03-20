@@ -170,3 +170,19 @@ setInterval(() => {
 
 window.addEventListener("storage", render);
 render();
+
+const slider = document.getElementById('fontSlider');
+const sizeValue = document.getElementById('sizeValue');
+
+// Load existing setting or default to 3
+const savedSize = localStorage.getItem('globalFontSize') || "3";
+slider.value = savedSize;
+sizeValue.innerText = savedSize;
+
+slider.addEventListener('input', () => {
+    const val = slider.value;
+    sizeValue.innerText = val;
+    
+    // Save to localStorage (Units are stored as a raw number string)
+    localStorage.setItem('globalFontSize', val);
+});
