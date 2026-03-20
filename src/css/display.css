@@ -3,14 +3,11 @@
     --dynamic-fs: 3rem; 
 }
 
-#textContainer {
-  /* Apply the variable to the container */
-  font-size: var(--fs);
-}
-
 body {
   font-family: Arial, sans-serif;
   margin: 0;
+  height: 100vh;
+  overflow: hidden; 
 }
 
 .container {
@@ -22,8 +19,9 @@ body {
 .column {
   flex: 1;
   padding: 20px;
-  overflow-y: auto;
-  position: relative;
+  display: flex;           
+  flex-direction: column;  
+  height: 100%;            
 }
 
 .assigned {
@@ -34,12 +32,25 @@ body {
   background: #ffebee; /* light red */
 }
 
-h2,h3{
+#assignedDisplay, #failedDisplay {
+  flex-grow: 1;            
+  overflow-y: auto;        
+}
+
+h2 {
   text-align: center;
   font-size: clamp(1.5rem, var(--dynamic-fs), 15rem);
+  flex-shrink: 0;         
+}
+
+h3 {
+  text-align: center;
+  font-size: clamp(1rem, calc(var(--dynamic-fs) * 0.75), 5rem);
+  flex-shrink: 0;        
+  margin-top: auto;      
 }
 
 .truck {
-  font-size: calc(var(--dynamic-fs) * 0.5);
+  font-size: calc(var(--dynamic-fs) * 1.8);
   padding: 15px;
 }
